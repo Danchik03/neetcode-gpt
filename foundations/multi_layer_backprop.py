@@ -18,27 +18,27 @@ class Solution:
 
         n = y_true.shape[0]
 
-        # ---- forward ----
-        z1 = W1 @ x + b1              # (hidden_size,)
-        a1 = np.maximum(0, z1)        # ReLU
-        z2 = W2 @ a1 + b2             # (output_size,)  == y_hat
+        # forward
+        z1 = W1 @ x + b1   
+        a1 = np.maximum(0, z1)
+        z2 = W2 @ a1 + b2
         y_hat = z2
 
         loss = np.mean((y_hat - y_true) ** 2)
 
-        # ---- backward ----
+        # backward 
         # dL/dy_hat, accounting for mean over n outputs
-        dz2 = (2.0 / n) * (y_hat - y_true)          # (output_size,)
+        dz2 = (2.0 / n) * (y_hat - y_true)
 
-        dW2 = np.outer(dz2, a1)                      # (output_size, hidden_size)
-        db2 = dz2                                     # (output_size,)
+        dW2 = np.outer(dz2, a1)
+        db2 = dz2
 
-        da1 = W2.T @ dz2                              # (hidden_size,)
+        da1 = W2.T @ dz2
         relu_mask = (z1 > 0).astype(np.float64)
-        dz1 = da1 * relu_mask                         # (hidden_size,)
+        dz1 = da1 * relu_mask
 
-        dW1 = np.outer(dz1, x)                        # (hidden_size, input_size)
-        db1 = dz1                                      # (hidden_size,)
+        dW1 = np.outer(dz1, x)
+        db1 = dz1
 
         return {
             'loss': round(float(loss), 4),
@@ -47,13 +47,3 @@ class Solution:
             'dW2': np.round(dW2, 4).tolist(),
             'db2': np.round(db2, 4).tolist(),
         }
-        # Architecture: x -> Linear(W1, b1) -> ReLU -> Linear(W2, b2) -> predictions
-        # Loss: MSE = mean((predictions - y_true)^2)
-        #
-        # Return dict with keys:
-        #   'loss':  float (MSE loss, rounded to 4 decimals)
-        #   'dW1':   2D list (gradient w.r.t. W1, rounded to 4 decimals)
-        #   'db1':   1D list (gradient w.r.t. b1, rounded to 4 decimals)
-        #   'dW2':   2D list (gradient w.r.t. W2, rounded to 4 decimals)
-        #   'db2':   1D list (gradient w.r.t. b2, rounded to 4 decimals)
-        pass
