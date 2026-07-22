@@ -17,7 +17,6 @@ class Solution:
         y_true = np.array(y_true, dtype=np.float64) # (output_size,)
 
         n = y_true.shape[0]
-
         # forward
         z1 = W1 @ x + b1   
         a1 = np.maximum(0, z1)
